@@ -18,6 +18,32 @@ function flash() {
     }
 }
 
+// авторизация
+function login($pdo) {
+    if ( strlen($_POST['email']) > 0 && strlen($_POST['pass']) > 0 ) {
+        if ( str_contains($_POST['email'], '@') ) {
+            $check = hash('md5',  'XyZzy12*_'.$_POST['pass']);
+            $stmt = $pdo->prepare('SELECT user_id FROM users WHERE email = :em AND password = :pw');
+            $stmt->execute(array(':em' => $_POST['email'], ':pw' => $check));
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ( $row !== false ) {
+                $_SESSION['user_id'] = $row['user_id'];
+                return true;
+            } else {
+                $_SESSION['failure'] = 'Incorrect email or password';
+                return false;
+            }
+        } else {
+            $_SESSION['failure'] = 'Email must have an at-sign (@)';
+            return false;
+        }
+    } else {
+        $_SESSION['failure'] = 'User name and password are required';
+        return false;
+    }
+} 
+
+
 // валидируем содержимое post запроса Profile
 function profile_validation() {
     if ( strlen($_POST['first_name']) > 0 && 

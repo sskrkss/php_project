@@ -21,12 +21,11 @@
             return;
         }
 
-        // добавляем валидированные данные в БД
+        // если все ок, добавляем валидированные данные в БД
         insert_profile($pdo);
         insert_position($pdo, $_SESSION['profile_id']);
         insert_education($pdo, $_SESSION['profile_id']);
-
-
+        
         $_SESSION['success'] = 'Profile added';
         header('Location: index.php');
         return;
